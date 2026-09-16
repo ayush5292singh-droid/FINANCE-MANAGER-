@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#090d18" />
+  <title>FINANCE MANAGER</title>
+
+  <link rel="stylesheet" href="style.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+</head>
+
+<body>
+  <div id="toast"></div>
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-symbol">₣</div>
+      <div>
+        <h1>FINANCE</h1>
+        <span>MANAGER</span>
+      </div>
+    </div>
+
+    <button class="nav-btn active" data-page="dashboard">⌂ Dashboard</button>
+    <button class="nav-btn" data-page="transactions">⇄ Transactions</button>
+    <button class="nav-btn" data-page="wallets">▣ Wallets</button>
+    <button class="nav-btn" data-page="budgets">◈ Budgets</button>
+    <button class="nav-btn" data-page="goals">◎ Savings Goals</button>
+    <button class="nav-btn" data-page="recurring">◷ Recurring</button>
+    <button class="nav-btn" data-page="scanner">▧ Receipt Scanner</button>
+    <button class="nav-btn" data-page="analytics">⌁ Analytics</button>
+    <button class="nav-btn" data-page="reports">▤ Reports</button>
+    <button class="nav-btn" data-page="backup">⟳ Backup</button>
+    <button class="nav-btn" data-page="settings">⚙ Settings</button>
+
+    <div class="sidebar-bottom">
+      <div class="plan-card">
+        <span class="plan-label">CURRENT PLAN</span>
+        <strong id="planLabel">FREE PLAN</strong>
+        <small>Premium: ₹99/month</small>
+        <button id="premiumButton">View Premium</button>
+      </div>
+      <small class="copyright">Local-first finance system</small>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">PERSONAL FINANCIAL COMMAND CENTER</p>
+        <h2 id="pageTitle">Dashboard</h2>
+      </div>
+
+      <div class="top-actions">
+        <select id="currencySelect">
+          <option value="INR">₹ INR</option>
+          <option value="USD">$ USD</option>
+          <option value="EUR">€ EUR</option>
+          <option value="GBP">£ GBP</option>
+          <option value="AED">د.إ AED</option>
+        </select>
+        <button class="icon-button" id="themeButton">☼</button>
+        <button class="primary-button" id="quickAddButton">+ Add Transaction</button>
+      </div>
+    </header>
+
+    <section id="appContent"></section>
+  </main>
+
+  <div class="modal hidden" id="transactionModal">
+    <div class="modal-card">
+      <button class="modal-close" data-close="transactionModal">×</button>
+      <h2>Add Transaction</h2>
+
+      <form id="transactionForm">
+        <label>Type</label>
+        <select id="transactionType" required>
+          <option value="expense">Expense</option>
+          <option value="income">Income</option>
+        </select>
+
+        <label>Amount</label>
+        <input id="transactionAmount" type="number" min="0.01" step="0.01" required />
+
+        <label>Description</label>
+        <input id="transactionDescription" maxlength="100" required />
+
+        <label>Category</label>
+        <select id="transactionCategory">
+          <option>Food</option>
+          <option>Travel</option>
+          <option>Shopping</option>
+          <option>Education</option>
+          <option>Health</option>
+          <option>Bills</option>
+          <option>Entertainment</option>
+          <option>Salary</option>
+          <option>Other</option>
+        </select>
+
+        <label>Wallet / Account</label>
+        <select id="transactionWallet"></select>
+
+        <label>Date</label>
+        <input id="transactionDate" type="date" required />
+
+        <label>Notes</label>
+        <textarea id="transactionNotes" rows="3"></textarea>
+
+        <button class="primary-button full-width" type="submit">
+          Save Transaction
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="premiumModal">
+    <div class="modal-card">
+      <button class="modal-close" data-close="premiumModal">×</button>
+      <div class="premium-heading">✦ FINANCE MANAGER PREMIUM</div>
+      <h2>₹99 / month</h2>
+      <p class="muted">
+        This screen explains the future subscription integration.
+      </p>
+
+      <ul class="feature-list">
+        <li>Advanced reports</li>
+        <li>Cloud backup and account login</li>
+        <li>AI-powered insights</li>
+        <li>Advanced OCR</li>
+        <li>Premium themes</li>
+        <li>Unlimited scans and goals</li>
+      </ul>
+
+      <div class="warning-box">
+        <strong>Not connected to Google Play Billing</strong>
+        <p>
+          This web version does not process payments. Real subscriptions
+          must be implemented with Google Play Billing in the Android app.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="ocrModal">
+    <div class="modal-card">
+      <button class="modal-close" data-close="ocrModal">×</button>
+      <h2>Receipt Details</h2>
+
+      <form id="receiptForm">
+        <label>Merchant</label>
+        <input id="receiptMerchant" required />
+
+        <label>Amount</label>
+        <input id="receiptAmount" type="number" min="0.01" step="0.01" required />
+
+        <label>Category</label>
+        <select id="receiptCategory">
+          <option>Food</option>
+          <option>Travel</option>
+          <option>Shopping</option>
+          <option>Bills</option>
+          <option>Health</option>
+          <option>Other</option>
+        </select>
+
+        <label>Wallet</label>
+        <select id="receiptWallet"></select>
+
+        <button class="primary-button full-width" type="submit">
+          Create Expense
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
